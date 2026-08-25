@@ -1,0 +1,94 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: realtime-chat-service
+
+  # ----------------------------------------------------
+  # 1. POSTGRESQL DATABASE CONFIGURATION
+  # ----------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chat_db
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # ----------------------------------------------------
+  # 2. REDIS CONFIGURATION
+  # ----------------------------------------------------
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+
+  # ----------------------------------------------------
+  # 3. APACHE KAFKA CONFIGURATION
+  # ----------------------------------------------------
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    # Producer Settings (Đẩy message khi user chat)
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+        spring.json.add.type.headers: false
+
+    # Consumer Settings (Đọc message lưu vào PostgreSQL)
+    consumer:
+      group-id: chat-storage-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.example.chat.dto.ChatMessageDto
+
+    # Listener Container Settings
+    listener:
+      ack-mode: manual_immediate
+      concurrency: 3
+
+# ----------------------------------------------------
+# 4. CUSTOM APP PROPERTIES
+# ----------------------------------------------------
+app:
+  kafka:
+    chat-topic: chat-messages
+  redis:
+    max-recent-messages: 50
+
+# ----------------------------------------------------
+# 5. LOGGING CONFIGURATION
+# ----------------------------------------------------
+logging:
+  level:
+    root: INFO
+    com.example.chat: DEBUG
+    org.springframework.kafka: INFO
