@@ -6,7 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "chat_rooms")
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ChatRoom {

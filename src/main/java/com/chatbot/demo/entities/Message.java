@@ -6,7 +6,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "messages")
+@Entity
+@Table(name = "messages")
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Message {

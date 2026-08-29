@@ -1,11 +1,11 @@
 package com.chatbot.demo.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User {

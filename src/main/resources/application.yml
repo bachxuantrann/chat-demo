@@ -68,7 +68,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.value.default.type: com.example.chat.dto.ChatMessageDto
+        spring.json.value.default.type: com.chatbot.demo.dto.ChatMessageDto
 
     # Listener Container Settings
     listener:
@@ -90,5 +90,5 @@ app:
 logging:
   level:
     root: INFO
-    com.example.chat: DEBUG
+    com.chatbot.demo: DEBUG
     org.springframework.kafka: INFO
